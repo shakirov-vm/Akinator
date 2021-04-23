@@ -12,12 +12,14 @@ struct Knot
 
 class Tree
 {
+public:
 	struct Knot* Root;
 
 	Tree();
 	~Tree();
-	void DeleteList(struct Knot* knot);
+	//void DeleteList(struct Knot* knot);
 };
 
+void DeleteList(struct Knot* knot);
 void DeleteBranch(struct Knot* knot);
 void AddList(struct Knot* knot, char* question, char* answer);
