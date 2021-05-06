@@ -1,17 +1,17 @@
 {
-	"firsst"
+	$firsst aaaaas$
 		{ 
-			"poltora"
+			$poltora$
 				{
-					"second"
-					"second second"
+					$second$
+					$second second$
 				}
 		}
 		{
-			"third"
+			$third$
 				{
-					"FOUUURTH"
-					"FIthh"
+					$FOUUURTH$
+					$FIthh$
 				}
 		}
 }

@@ -14,7 +14,7 @@ private:
 public:
 	Tree();
 	~Tree();
-	Tree& operator= (const Tree&) = delete;
+	Tree& operator= (const Tree& knot);
 	Tree(const Tree&) = delete;
 	void FillAkinator(char* base);
 

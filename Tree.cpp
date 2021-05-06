@@ -18,6 +18,17 @@ Tree::~Tree()
 	printf("ROOT IS %p - WILL BE DEAD\n", root);
 	DeleteBranch(root);
 }
+Tree& Tree::operator= (const Tree& tree)
+{
+	printf("WE INTO OPRATOR=\n");
+	root = (struct Knot*) calloc (1, sizeof(struct Knot));
+	root->data = tree.root->data;
+	root->left = tree.root->left;
+	root->right = tree.root->right;
+	root->parent = tree.root->parent;
+
+	return *this;
+}
 
 void KnotConstruct(struct Knot* knot, struct Knot* parent)
 {
@@ -62,45 +73,63 @@ void Tree::FillAkinator(char* base_name)
 
 	char* base = (char*) calloc (MAX_BASE_SIZE, sizeof(char));
 	
-	FILE* potok = fopen(base_name, "r");           //
+	FILE* potok = fopen(base_name, "r");           
 	printf("FILE* is %p\n", potok);
 
-	fread(base, sizeof(char), MAX_BASE_SIZE, potok);      //
+	fread(base, sizeof(char), MAX_BASE_SIZE, potok);      
 
 	fclose(potok);
 
-	char* string = (char*) calloc (MAX_DATA_SIZE, sizeof(char));       //
-	struct Knot* knot = (struct Knot*) calloc (1, sizeof(struct Knot));    //
+	char* string = (char*) calloc (MAX_DATA_SIZE, sizeof(char));       
+	struct Knot* knot = (struct Knot*) calloc (1, sizeof(struct Knot));    
 
 	string = base;
-	knot = root;
+	//knot = root;
+
 			// ???
 	for (; *string != '\0'; string++)
 	{
 		if (isspace(*string)) continue;
 		if (*string == '{')
 		{
-			string = strtok(string, "\"");
-			printf(">>> %p\n", knot);
-			knot = FillKnot(knot->left, string, knot);
+			string++;
+			while(isspace(*string)) string++;
+			string = strtok(string, "$");
+			printf("<<<{%p} - [%s], <%d>\n", string, string, *string);
+
+			//printf(">>> %p\n", knot);
+			//knot = (struct Knot*)calloc(1, sizeof(Knot));
+			//printf(">>> %p\n", knot->left);
+			//knot = FillKnot(knot->left, string, knot);
+
+			string = string + strlen(string) + 1;
+
 			continue;
 		}
 		if (*string == '}')
 		{
-			knot = knot->parent;
+			//knot = knot->parent;
 			continue;
 		}
-		if (*string == '\"')
+		if (*string == '$')
 		{
-			string = strtok(string, "\"");                        //?????
-			knot = FillKnot(knot->right, string, knot);
+			string++;
+			while (isspace(*string)) string++;
+			string = strtok(string, "$");
+			if (*string == '}') break;                                                       // WERY DANGEROUS
+			printf(">>>{%p} - [%s], <%d>\n", string, string, *string);
+
+			//knot = FillKnot(knot->right, string, knot);
+
+			string = string + strlen(string) + 1;  // Maybe it is dangerous
 			continue;
 		}
 	}
+	printf("WE OUT\n");
 
 	free(base);
-	free(string);
-	free(knot);
+	//free(string);     ?????   Не надо сюда память выделять наверное
+	//free(knot);
 }
 //knot = FillKnot(root, string, nullptr);
 
@@ -122,10 +151,12 @@ void Tree::FillAkinator(char* base_name)
 }*/
 struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
 {
+	printf("WE IN FILL\n");
 	knot = (struct Knot*) calloc (1, sizeof(Knot));
 	knot->data = string;
 	knot->left = nullptr;
 	knot->right = nullptr;
 	knot->parent = parent;
+	printf("OUT OF FILL\n");
 	return knot;
 }
