@@ -1,5 +1,7 @@
 ﻿#include <stdio.h>
+#include <stdlib.h>
 //void AddList(struct Knot* knot, char* question, char* answer) 
+#define MAX_STR_SIZE 100
 
 #ifndef TREE_H_
 #define TREE_H_
@@ -15,7 +17,7 @@ int main()
 	sprintf(question, "Hello!");
 	sprintf(answer, "GoodBUUUY");
 
-	printf("main\n");
+	Akinator.Game();
 	//Akinat.Root->string = question;
-	AddList(Akinator.Root, question, answer);
+	//AddList(Akinator.Root, question, answer);
 }

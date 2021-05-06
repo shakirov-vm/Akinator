@@ -1,25 +1,26 @@
-#include <stdlib.h>
-#include <assert.h>
-
-#define MAX_STR_SIZE 100 
 
 struct Knot
 {
-	char* string;
+	char* data;
+	struct Knot* parent;
 	struct Knot* left;
 	struct Knot* right;
 };
 
 class Tree
 {
+private:
+	struct Knot* root;
 public:
-	struct Knot* Root;
-
 	Tree();
 	~Tree();
-	//void DeleteList(struct Knot* knot);
+	Tree& operator= (const Tree&) = delete;
+	Tree(const Tree&) = delete;
+	void FillAkinator(char* base);
+
+	void Game();
 };
 
-void DeleteList(struct Knot* knot);
+struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent);
+void KnotConstruct(struct Knot* knot, struct Knot* parent);
 void DeleteBranch(struct Knot* knot);
-void AddList(struct Knot* knot, char* question, char* answer);

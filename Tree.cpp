@@ -1,63 +1,131 @@
-#include "stdio.h"
-
-#ifndef TREE_H_
-#define TREE_H_
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 #include "Tree.h"
-#endif
+
+#define MAX_DATA_SIZE 100
+#define MAX_BASE_SIZE 100000
 
 Tree::Tree()
 {
-	printf("Con\n");
-	Root = (Knot*) calloc (1, sizeof(Knot));
-	Root->string = (char*)calloc(MAX_STR_SIZE, sizeof(char));
-	
-	assert(Root->string);
-	Root->left = nullptr;
-	Root->right = nullptr;
+	root = {};
+	//root = (struct Knot*) calloc (1, sizeof(struct Knot));
+	KnotConstruct(root, nullptr);
 }
 Tree::~Tree()
 {
-	printf("Dec\n");
-	DeleteBranch(Root);
+	printf("ROOT IS %p - WILL BE DEAD\n", root);
+	DeleteBranch(root);
 }
-void DeleteList(struct Knot* knot)
+
+void KnotConstruct(struct Knot* knot, struct Knot* parent)
 {
-	assert(!(knot->right));
-	assert(!(knot->left));
-	free(knot->string);
-	knot = nullptr;
-	printf("%p - %p\n", knot->right, knot->left);
+	printf("ROOT BEFORE CALLOC - %p\n", knot);
+	knot = (struct Knot*) calloc (1, sizeof(struct Knot));
+	knot->data = (char*) calloc (MAX_DATA_SIZE, sizeof(char));
+	knot->left  = nullptr;
+	knot->right = nullptr;
+	knot->parent = parent;
+	printf("ROOT AFTER CALLOC - %p\n", knot);
 }
+
 void DeleteBranch(struct Knot* knot)
 {
-	if (knot != nullptr)
-	{
-		//printf(">>>%X, %X\n", knot, knot->right);
-		DeleteBranch(knot->right);
-		DeleteBranch(knot->left);
+	printf("I - %p - DEAD\n", knot);
+	if (knot != NULL) {
 
-		free(knot->string);
-		knot = nullptr;
+		DeleteBranch(knot->left);
+		DeleteBranch(knot->right);
+
+		free(knot->data);
+		free(knot);
 	}
-	printf("There\n");
-	DeleteList(knot);
 }
+
 void AddList(struct Knot* knot, char* question, char* answer)
 {
-	assert(!(knot->right));
-	assert(!(knot->left));
-	struct Knot* Left = (Knot*)calloc(1, sizeof(Knot));
-	struct Knot* Right = (Knot*)calloc(1, sizeof(Knot));;
+	knot->right = (struct Knot*) calloc (1, sizeof(struct Knot));
+	KnotConstruct(knot->right, knot);
 
-	Right->string = knot->string;
-	Left->string = answer;
-	knot->string = question;
+	knot->left = (struct Knot*) calloc (1, sizeof(struct Knot));
+	KnotConstruct(knot->left, knot);
 
-	Right->left = nullptr;
-	Right->right = nullptr;
-	Left->left = nullptr;
-	Left->right = nullptr;
-	knot->left = Left;
-	knot->right = Right;
-	printf("{%p %p}\n", knot->left, knot->right);
+	knot->right->data = knot->data;
+	knot->data = question;
+	knot->left->data = answer;
+}
+
+void Tree::FillAkinator(char* base_name)
+{
+	printf("WE ENTER INTO AKINATOR\n");
+
+	char* base = (char*) calloc (MAX_BASE_SIZE, sizeof(char));
+	
+	FILE* potok = fopen(base_name, "r");           //
+	printf("FILE* is %p\n", potok);
+
+	fread(base, sizeof(char), MAX_BASE_SIZE, potok);      //
+
+	fclose(potok);
+
+	char* string = (char*) calloc (MAX_DATA_SIZE, sizeof(char));       //
+	struct Knot* knot = (struct Knot*) calloc (1, sizeof(struct Knot));    //
+
+	string = base;
+	knot = root;
+			// ???
+	for (; *string != '\0'; string++)
+	{
+		if (isspace(*string)) continue;
+		if (*string == '{')
+		{
+			string = strtok(string, "\"");
+			printf(">>> %p\n", knot);
+			knot = FillKnot(knot->left, string, knot);
+			continue;
+		}
+		if (*string == '}')
+		{
+			knot = knot->parent;
+			continue;
+		}
+		if (*string == '\"')
+		{
+			string = strtok(string, "\"");                        //?????
+			knot = FillKnot(knot->right, string, knot);
+			continue;
+		}
+	}
+
+	free(base);
+	free(string);
+	free(knot);
+}
+//knot = FillKnot(root, string, nullptr);
+
+/*for (int i = 0; base[i] != '\0'; i++)
+{
+	if (isspace(base[i])) continue;
+	if (base[i] == '{')
+	{
+		knot = FillKnot(knot->left, string, knot);
+	}
+	if (base[i] == '\'')
+	{
+		knot = FillKnot(knot->right, string, knot);
+	}
+	if (base[i] == '}')
+	{
+		knot = knot->parent;
+	}
+}*/
+struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
+{
+	knot = (struct Knot*) calloc (1, sizeof(Knot));
+	knot->data = string;
+	knot->left = nullptr;
+	knot->right = nullptr;
+	knot->parent = parent;
+	return knot;
 }
