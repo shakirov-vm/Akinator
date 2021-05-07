@@ -84,6 +84,12 @@ void Tree::FillAkinator(char* base_name)
 	struct Knot* knot = (struct Knot*) calloc (1, sizeof(struct Knot));    
 
 	string = base;
+	knot->left = nullptr;
+	knot->right = nullptr;
+	knot->data = (char*) calloc (MAX_DATA_SIZE, sizeof(char));
+	knot->parent = nullptr;
+	
+
 	//knot = root;
 
 			// ???
@@ -97,10 +103,9 @@ void Tree::FillAkinator(char* base_name)
 			string = strtok(string, "$");
 			printf("<<<{%p} - [%s], <%d>\n", string, string, *string);
 
-			//printf(">>> %p\n", knot);
-			//knot = (struct Knot*)calloc(1, sizeof(Knot));
-			//printf(">>> %p\n", knot->left);
-			//knot = FillKnot(knot->left, string, knot);
+			printf(">>> %p\n", knot);
+			printf(">>> %p\n", knot->left);
+			knot = FillKnot(knot->left, string, knot);
 
 			string = string + strlen(string) + 1;
 
@@ -108,7 +113,8 @@ void Tree::FillAkinator(char* base_name)
 		}
 		if (*string == '}')
 		{
-			//knot = knot->parent;
+			if (knot->parent != nullptr) knot = knot->parent;
+			else break;
 			continue;
 		}
 		if (*string == '$')
@@ -153,6 +159,7 @@ struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
 {
 	printf("WE IN FILL\n");
 	knot = (struct Knot*) calloc (1, sizeof(Knot));
+	knot->data = (char*) calloc (MAX_DATA_SIZE, sizeof(char));
 	knot->data = string;
 	knot->left = nullptr;
 	knot->right = nullptr;
