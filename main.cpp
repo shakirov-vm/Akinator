@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 //void AddList(struct Knot* knot, char* question, char* answer) 
 #define MAX_STR_SIZE 100

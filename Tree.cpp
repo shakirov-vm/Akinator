@@ -20,7 +20,7 @@ Tree::~Tree()
 }
 Tree& Tree::operator= (const Tree& tree)
 {
-	printf("WE INTO OPRATOR=\n");
+	printf("WE INTO OPERATOR=\n");
 	root = (struct Knot*) calloc (1, sizeof(struct Knot));
 	root->data = tree.root->data;
 	root->left = tree.root->left;
@@ -80,19 +80,32 @@ void Tree::FillAkinator(char* base_name)
 
 	fclose(potok);
 
-	char* string = (char*) calloc (MAX_DATA_SIZE, sizeof(char));       
 	struct Knot* knot = (struct Knot*) calloc (1, sizeof(struct Knot));    
 
-	string = base;
+	char* string = base;
 	knot->left = nullptr;
 	knot->right = nullptr;
 	knot->data = (char*) calloc (MAX_DATA_SIZE, sizeof(char));
 	knot->parent = nullptr;
 	
+	int left = 0;
+	int right = 0;
 
-	//knot = root;
+	for (; *string != '\0'; string++)
+	{
+		if (isspace(*string)) continue;
+		if (*string == '{')
+		{
+			string++;
+			while(isspace(*string)) string++;
+			string = strtok(string, "$");
+			knot->data = string;
+			root->data = string;
+			string = string + strlen(string) + 1;
+			break;
+		}
+	}
 
-			// ???
 	for (; *string != '\0'; string++)
 	{
 		if (isspace(*string)) continue;
@@ -103,9 +116,10 @@ void Tree::FillAkinator(char* base_name)
 			string = strtok(string, "$");
 			printf("<<<{%p} - [%s], <%d>\n", string, string, *string);
 
-			printf(">>> %p\n", knot);
-			printf(">>> %p\n", knot->left);
 			knot = FillKnot(knot->left, string, knot);
+
+			if (left == 0) root->left = knot;
+			left = 1;
 
 			string = string + strlen(string) + 1;
 
@@ -125,7 +139,10 @@ void Tree::FillAkinator(char* base_name)
 			if (*string == '}') break;                                                       // WERY DANGEROUS
 			printf(">>>{%p} - [%s], <%d>\n", string, string, *string);
 
-			//knot = FillKnot(knot->right, string, knot);
+			knot = FillKnot(knot->right, string, knot);
+
+			if (right == 0) root->right = knot;
+			right = 1;
 
 			string = string + strlen(string) + 1;  // Maybe it is dangerous
 			continue;
@@ -133,28 +150,13 @@ void Tree::FillAkinator(char* base_name)
 	}
 	printf("WE OUT\n");
 
+
+
 	free(base);
-	//free(string);     ?????   Íå íàäî ñþäà ïàìÿòü âûäåëÿòü íàâåðíîå
+	//free(string);     ?????   ÃÃ¥ Ã­Ã Ã¤Ã® Ã±Ã¾Ã¤Ã  Ã¯Ã Ã¬Ã¿Ã²Ã¼ Ã¢Ã»Ã¤Ã¥Ã«Ã¿Ã²Ã¼ Ã­Ã Ã¢Ã¥Ã°Ã­Ã®Ã¥
 	//free(knot);
 }
-//knot = FillKnot(root, string, nullptr);
 
-/*for (int i = 0; base[i] != '\0'; i++)
-{
-	if (isspace(base[i])) continue;
-	if (base[i] == '{')
-	{
-		knot = FillKnot(knot->left, string, knot);
-	}
-	if (base[i] == '\'')
-	{
-		knot = FillKnot(knot->right, string, knot);
-	}
-	if (base[i] == '}')
-	{
-		knot = knot->parent;
-	}
-}*/
 struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
 {
 	printf("WE IN FILL\n");
