@@ -9,19 +9,23 @@
 
 Tree::Tree()
 {
-	root = {};
-	//root = (struct Knot*) calloc (1, sizeof(struct Knot));
-	KnotConstruct(root, nullptr);
+	root = (struct Knot*)calloc(1, sizeof(struct Knot));
+	printf("ROOT PTR IS {%p}\n", root);
+	root->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	root->left = nullptr;
+	root->right = nullptr;
+	root->parent = nullptr;
+	printf("ROOT: root - [%p]; data - (%p);\nleft -  {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
 }
 Tree::~Tree()
 {
 	printf("ROOT IS %p - WILL BE DEAD\n", root);
-	DeleteBranch(root);
+	//DeleteBranch(root);
 }
 Tree& Tree::operator= (const Tree& tree)
 {
 	printf("WE INTO OPERATOR=\n");
-	root = (struct Knot*) calloc (1, sizeof(struct Knot));
+	root = (struct Knot*)calloc(1, sizeof(struct Knot));
 	root->data = tree.root->data;
 	root->left = tree.root->left;
 	root->right = tree.root->right;
@@ -32,13 +36,13 @@ Tree& Tree::operator= (const Tree& tree)
 
 void KnotConstruct(struct Knot* knot, struct Knot* parent)
 {
-	printf("ROOT BEFORE CALLOC - %p\n", knot);
-	knot = (struct Knot*) calloc (1, sizeof(struct Knot));
-	knot->data = (char*) calloc (MAX_DATA_SIZE, sizeof(char));
-	knot->left  = nullptr;
+	//printf("ROOT BEFORE CALLOC - %p\n", knot);
+	knot = (struct Knot*)calloc(1, sizeof(struct Knot));
+	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	knot->left = nullptr;
 	knot->right = nullptr;
 	knot->parent = parent;
-	printf("ROOT AFTER CALLOC - %p\n", knot);
+	//printf("ROOT AFTER CALLOC - %p\n", knot);
 }
 
 void DeleteBranch(struct Knot* knot)
@@ -54,72 +58,67 @@ void DeleteBranch(struct Knot* knot)
 	}
 }
 
-void AddList(struct Knot* knot, char* question, char* answer)
-{
-	knot->right = (struct Knot*) calloc (1, sizeof(struct Knot));
-	KnotConstruct(knot->right, knot);
-
-	knot->left = (struct Knot*) calloc (1, sizeof(struct Knot));
-	KnotConstruct(knot->left, knot);
-
-	knot->right->data = knot->data;
-	knot->data = question;
-	knot->left->data = answer;
-}
-
 void Tree::FillAkinator(char* base_name)
 {
 	printf("WE ENTER INTO AKINATOR\n");
 
-	char* base = (char*) calloc (MAX_BASE_SIZE, sizeof(char));
-	
-	FILE* potok = fopen(base_name, "r");           
-	printf("FILE* is %p\n", potok);
+	//printf("ROOT: root - [%p]; data - (%p);\nleft - {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
 
-	fread(base, sizeof(char), MAX_BASE_SIZE, potok);      
+	char* base = (char*)calloc(MAX_BASE_SIZE, sizeof(char));
+
+	FILE* potok = fopen(base_name, "r");
+	//printf("FILE* is %p\n", potok);
+
+	fread(base, sizeof(char), MAX_BASE_SIZE, potok);
 
 	fclose(potok);
 
-	struct Knot* knot = (struct Knot*) calloc (1, sizeof(struct Knot));    
+	struct Knot* knot = (struct Knot*)calloc(1, sizeof(struct Knot));
 
 	char* string = base;
 	knot->left = nullptr;
 	knot->right = nullptr;
-	knot->data = (char*) calloc (MAX_DATA_SIZE, sizeof(char));
+	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 	knot->parent = nullptr;
-	
-	int left = 0;
-	int right = 0;
 
-	for (; *string != '\0'; string++)
+	/*for (; *string != '\0'; string++)
 	{
 		if (isspace(*string)) continue;
 		if (*string == '{')
 		{
 			string++;
-			while(isspace(*string)) string++;
+			while (isspace(*string)) string++;
 			string = strtok(string, "$");
 			knot->data = string;
 			root->data = string;
 			string = string + strlen(string) + 1;
 			break;
 		}
-	}
-
+	}*/
+	//printf("ROOT: root - [%p]; data - (%s);\nleft - {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
+	printf("START KNOT - [%p]\n\n\n\n", knot);
 	for (; *string != '\0'; string++)
 	{
 		if (isspace(*string)) continue;
+		if (*string == '[')
+		{
+			string++;
+			while (isspace(*string)) string++;
+			string = strtok(string, "@");
+
+			knot->data = string;
+
+			string = string + strlen(string) + 1;
+
+			continue;
+		}
 		if (*string == '{')
 		{
 			string++;
-			while(isspace(*string)) string++;
+			while (isspace(*string)) string++;
 			string = strtok(string, "$");
-			printf("<<<{%p} - [%s], <%d>\n", string, string, *string);
 
 			knot = FillKnot(knot->left, string, knot);
-
-			if (left == 0) root->left = knot;
-			left = 1;
 
 			string = string + strlen(string) + 1;
 
@@ -127,8 +126,11 @@ void Tree::FillAkinator(char* base_name)
 		}
 		if (*string == '}')
 		{
-			if (knot->parent != nullptr) knot = knot->parent;
-			else break;
+			if (knot->parent != nullptr)
+			{
+				knot->parent->right = knot;
+				knot = knot->parent;
+			}
 			continue;
 		}
 		if (*string == '$')
@@ -136,36 +138,35 @@ void Tree::FillAkinator(char* base_name)
 			string++;
 			while (isspace(*string)) string++;
 			string = strtok(string, "$");
-			if (*string == '}') break;                                                       // WERY DANGEROUS
-			printf(">>>{%p} - [%s], <%d>\n", string, string, *string);
 
+			knot->parent->left = knot;
+			knot = knot->parent;
 			knot = FillKnot(knot->right, string, knot);
 
-			if (right == 0) root->right = knot;
-			right = 1;
+			string = string + strlen(string) + 1;
+			continue;
+		}
+		if (*string == ']')
+		{
+			root->left = knot->left;
+			root->right = knot->right;
+			root->data = knot->data;
 
-			string = string + strlen(string) + 1;  // Maybe it is dangerous
 			continue;
 		}
 	}
-	printf("WE OUT\n");
-
-
 
 	free(base);
-	//free(string);     ?????   Íå íàäî ñþäà ïàìÿòü âûäåëÿòü íàâåðíîå
-	//free(knot);
 }
 
 struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
 {
-	printf("WE IN FILL\n");
-	knot = (struct Knot*) calloc (1, sizeof(Knot));
-	knot->data = (char*) calloc (MAX_DATA_SIZE, sizeof(char));
+	knot = (struct Knot*)calloc(1, sizeof(Knot));
+	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 	knot->data = string;
 	knot->left = nullptr;
 	knot->right = nullptr;
 	knot->parent = parent;
-	printf("OUT OF FILL\n");
+
 	return knot;
 }

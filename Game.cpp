@@ -20,7 +20,7 @@ void Tree::Game()
 		{
 			printf("Enter file name:\n");
 			char* base_name = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
-			//fread(base_name, sizeof(char), MAX_NAME_SIZE, stdin);
+
 			scanf("%s", base_name);
 
 			FillAkinator(base_name);
@@ -32,4 +32,6 @@ void Tree::Game()
 
 		}		
 	}
+	printf("WE OUT OF GAME\n\n");
 }
+

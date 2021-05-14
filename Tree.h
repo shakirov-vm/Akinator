@@ -1,3 +1,4 @@
+
 struct Knot
 {
 	char* data;

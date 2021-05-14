@@ -1,17 +1,23 @@
-{
-	$firsst aaaaas$
+[
+	@firsst aaaaas@
 		{ 
 			$poltora$
 				{
 					$second$
+						{
+							$ten$
+							$anten$
+						}
 					$second second$
 				}
-		}
-		{
 			$third$
 				{
 					$FOUUURTH$
 					$FIthh$
+						{
+							$reseven$
+							$Jeseven$
+						}
 				}
 		}
-}  
+]  
