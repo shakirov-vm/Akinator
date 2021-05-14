@@ -34,13 +34,11 @@ Tree& Tree::operator= (const Tree& tree)
 
 void KnotConstruct(struct Knot* knot, struct Knot* parent)
 {
-	//printf("ROOT BEFORE CALLOC - %p\n", knot);
 	knot = (struct Knot*)calloc(1, sizeof(struct Knot));
 	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 	knot->left = nullptr;
 	knot->right = nullptr;
 	knot->parent = parent;
-	//printf("ROOT AFTER CALLOC - %p\n", knot);
 }
 
 void DeleteBranch(struct Knot* knot)
@@ -60,12 +58,9 @@ void Tree::FillAkinator(char* base_name)
 {
 	printf("WE ENTER INTO AKINATOR\n");
 
-	//printf("ROOT: root - [%p]; data - (%p);\nleft - {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
-
 	char* base = (char*)calloc(MAX_BASE_SIZE, sizeof(char));
 
 	FILE* potok = fopen(base_name, "r");
-	//printf("FILE* is %p\n", potok);
 
 	fread(base, sizeof(char), MAX_BASE_SIZE, potok);
 
@@ -79,23 +74,8 @@ void Tree::FillAkinator(char* base_name)
 	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 	knot->parent = nullptr;
 
-	/*for (; *string != '\0'; string++)
-	{
-		if (isspace(*string)) continue;
-		if (*string == '{')
-		{
-			string++;
-			while (isspace(*string)) string++;
-			string = strtok(string, "$");
-			knot->data = string;
-			root->data = string;
-			string = string + strlen(string) + 1;
-			break;
-		}
-	}*/
-	//printf("ROOT: root - [%p]; data - (%s);\nleft - {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
 	printf("START KNOT - [%p]\n\n\n\n", knot);
-	for (; /**string != '\0'*/; string++)
+	for (;; string++)
 	{
 		if (isspace(*string)) continue;
 		if (*string == '[')
@@ -146,8 +126,6 @@ void Tree::FillAkinator(char* base_name)
 			knot = knot->parent;
 			knot = FillKnot(knot->right, string, knot);
 
-			//printf("WE DO IT: {%s} - left - [%s] - right - [%s]\n", knot->parent->data, knot->parent->left->data, knot->data);
-
 			string = string + strlen(string) + 1;
 			continue;
 		}
@@ -156,11 +134,11 @@ void Tree::FillAkinator(char* base_name)
 			root->left = knot->left;
 			root->right = knot->right;
 			root->data = knot->data;
-			printf(">>>>>>> [%s] -> [%s] <- [%s]\n", knot->data, knot->left->data, knot->right->data);
+
 			break;
 		}
 	}
-	printf("ROOT: root - [%p]; data - (%s);\nleft - {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
+
 	free(base);
 }
 

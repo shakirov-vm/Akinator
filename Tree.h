@@ -20,7 +20,7 @@ public:
 	Tree(const Tree&) = delete;
 	void FillAkinator(char* base);
 	void DUMP();
-
+	void Play();
 	void Game();
 };
 

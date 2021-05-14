@@ -1,7 +1,7 @@
 [
-	@firsst aaaaas@
+	@yes@
 		{ 
-			$poltora$
+			$you therr if ES$
 				{
 					$second$
 						{
@@ -10,7 +10,7 @@
 						}
 					$second_second$
 				}
-			$third$
+			$you there if NOO$
 				{
 					$FOUUURTH$
 						{
