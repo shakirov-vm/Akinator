@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -95,7 +94,7 @@ void Tree::FillAkinator(char* base_name)
 	}*/
 	//printf("ROOT: root - [%p]; data - (%s);\nleft - {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
 	printf("START KNOT - [%p]\n\n\n\n", knot);
-	for (; *string != '\0'; string++)
+	for (; /**string != '\0'*/; string++)
 	{
 		if (isspace(*string)) continue;
 		if (*string == '[')
@@ -104,7 +103,12 @@ void Tree::FillAkinator(char* base_name)
 			while (isspace(*string)) string++;
 			string = strtok(string, "@");
 
-			knot->data = string;
+			size_t len = strlen(string);
+			for (int i = 0; i < len; i++)
+			{
+				knot->data[i] = string[i];
+			}
+			knot->data[len] = '\0';
 
 			string = string + strlen(string) + 1;
 
@@ -141,6 +145,8 @@ void Tree::FillAkinator(char* base_name)
 			knot = knot->parent;
 			knot = FillKnot(knot->right, string, knot);
 
+			//printf("WE DO IT: {%s} - left - [%s] - right - [%s]\n", knot->parent->data, knot->parent->left->data, knot->data);
+
 			string = string + strlen(string) + 1;
 			continue;
 		}
@@ -149,11 +155,11 @@ void Tree::FillAkinator(char* base_name)
 			root->left = knot->left;
 			root->right = knot->right;
 			root->data = knot->data;
-			printf("[%s] -> [%s] <- [%s]\n", root->data, root->left->data, root->right->data);
-			continue;
+			printf(">>>>>>> [%s] -> [%s] <- [%s]\n", knot->data, knot->left->data, knot->right->data);
+			break;
 		}
 	}
-
+	printf("ROOT: root - [%p]; data - (%s);\nleft - {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
 	free(base);
 }
 
@@ -161,7 +167,13 @@ struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
 {
 	knot = (struct Knot*)calloc(1, sizeof(Knot));
 	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
-	knot->data = string;
+
+	size_t len = strlen(string);
+	for (int i = 0; i < len; i++)
+	{
+		knot->data[i] = string[i];
+	}
+	knot->data[len] = '\0';
 	knot->left = nullptr;
 	knot->right = nullptr;
 	knot->parent = parent;

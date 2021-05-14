@@ -13,24 +13,24 @@ void Tree::Game()
 	size_t answer = 0;
 	printf("Enter code:\n");
 	scanf("%d", &answer);
-	
+
 	switch (answer)
 	{
-		case 1:			// LOAD BASE AND LOAD TO TREE
-		{
-			printf("Enter file name:\n");
-			char* base_name = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
+	case 1:			// LOAD BASE AND LOAD TO TREE
+	{
+		printf("Enter file name:\n");
+		char* base_name = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
 
-			scanf("%s", base_name);
+		scanf("%s", base_name);
 
-			FillAkinator(base_name);
+		FillAkinator(base_name);
 
-			break;
-		}
-		case 2:         //DUMP
-		{
-			DUMP();
-		}		
+		break;
+	}
+	case 2:         //DUMP
+	{
+		DUMP();
+	}
 	}
 	printf("WE OUT OF GAME\n\n");
 }

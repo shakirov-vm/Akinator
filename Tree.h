@@ -28,3 +28,4 @@ public:
 struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent);
 void KnotConstruct(struct Knot* knot, struct Knot* parent);
 void DeleteBranch(struct Knot* knot);
+void KnotPrint(struct Knot* knot, FILE* potok);
