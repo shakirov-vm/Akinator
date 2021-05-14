@@ -3,4 +3,4 @@ compile:
 run:
 	./main
 graph:
-	dot -v -Tpng –o graph.png graph.dot
+	dot -v -Tpng -oPNG.png graph.dot

@@ -1,4 +1,3 @@
-
 #define MAX_DATA_SIZE 100
 #define MAX_BASE_SIZE 100000
 
