@@ -1,5 +1,5 @@
 compile:
-	g++ main.cpp Tree.cpp Game.cpp -o main -Wall
+	g++ main.cpp Tree.cpp Game.cpp GraphDump.cpp -o main -Wall
 run:
 	./main
 graph:

@@ -1,4 +1,7 @@
 
+#define MAX_DATA_SIZE 100
+#define MAX_BASE_SIZE 100000
+
 struct Knot
 {
 	char* data;
@@ -17,6 +20,7 @@ public:
 	Tree& operator= (const Tree& knot);
 	Tree(const Tree&) = delete;
 	void FillAkinator(char* base);
+	void DUMP();
 
 	void Game();
 };

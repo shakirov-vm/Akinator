@@ -27,11 +27,10 @@ void Tree::Game()
 
 			break;
 		}
-		case 2:
+		case 2:         //DUMP
 		{
-
+			DUMP();
 		}		
 	}
 	printf("WE OUT OF GAME\n\n");
 }
-

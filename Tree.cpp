@@ -1,11 +1,9 @@
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include "Tree.h"
-
-#define MAX_DATA_SIZE 100
-#define MAX_BASE_SIZE 100000
 
 Tree::Tree()
 {
@@ -151,7 +149,7 @@ void Tree::FillAkinator(char* base_name)
 			root->left = knot->left;
 			root->right = knot->right;
 			root->data = knot->data;
-
+			printf("[%s] -> [%s] <- [%s]\n", root->data, root->left->data, root->right->data);
 			continue;
 		}
 	}

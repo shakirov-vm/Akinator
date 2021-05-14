@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 //void AddList(struct Knot* knot, char* question, char* answer) 
 #define MAX_STR_SIZE 100
@@ -17,6 +17,8 @@ int main()
 	sprintf(question, "Hello!");
 	sprintf(answer, "GoodBUUUY");
 
+	Akinator.Game();
+	printf("JUST DO IT\n");
 	Akinator.Game();
 	//Akinat.Root->string = question;
 	//AddList(Akinator.Root, question, answer);
