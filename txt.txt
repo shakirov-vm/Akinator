@@ -1,26 +1,26 @@
 [
-	@yes@
+	@bgbgwotnoe@
 		{ 
-			$you therr if ES$
+			$Unlife$
 				{
-					$second$
+					$KRUGLOE$
 						{
 							$ten$
 							$anten$
 						}
-					$second_second$
+					$Poltorasheshechka$
 				}
-			$you there if NOO$
+			$ZGGIVOE$
 				{
-					$FOUUURTH$
+					$In FOREST$
 						{
-							$we do$
-							$it$
+							$Medved$
+							$SOBAKA$
 						}
-					$FIthh$
+					$Eda$
 						{
-							$reseven$
-							$Jeseven$
+							$KSP$
+							$KPM$
 						}
 				}
 		}

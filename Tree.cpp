@@ -8,17 +8,14 @@
 Tree::Tree()
 {
 	root = (struct Knot*)calloc(1, sizeof(struct Knot));
-	printf("ROOT PTR IS {%p}\n", root);
 	root->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 	root->left = nullptr;
 	root->right = nullptr;
 	root->parent = nullptr;
-	printf("ROOT: root - [%p]; data - (%p);\nleft -  {%p}; right - {%p}; parent -  {%p}\n\n", root, root->data, root->left, root->right, root->parent);
 }
 Tree::~Tree()
 {
-	printf("ROOT IS %p - WILL BE DEAD\n", root);
-	//DeleteBranch(root);
+	DeleteBranch(root);
 }
 Tree& Tree::operator= (const Tree& tree)
 {
@@ -43,7 +40,6 @@ void KnotConstruct(struct Knot* knot, struct Knot* parent)
 
 void DeleteBranch(struct Knot* knot)
 {
-	printf("I - %p - DEAD\n", knot);
 	if (knot != NULL) {
 
 		DeleteBranch(knot->left);
@@ -56,8 +52,6 @@ void DeleteBranch(struct Knot* knot)
 
 void Tree::FillAkinator(char* base_name)
 {
-	printf("WE ENTER INTO AKINATOR\n");
-
 	char* base = (char*)calloc(MAX_BASE_SIZE, sizeof(char));
 
 	FILE* potok = fopen(base_name, "r");
@@ -74,7 +68,6 @@ void Tree::FillAkinator(char* base_name)
 	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 	knot->parent = nullptr;
 
-	printf("START KNOT - [%p]\n\n\n\n", knot);
 	for (;; string++)
 	{
 		if (isspace(*string)) continue;
@@ -152,6 +145,7 @@ struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
 	{
 		knot->data[i] = string[i];
 	}
+	printf("[%s]\n", knot->data);
 	knot->data[len] = '\0';
 	knot->left = nullptr;
 	knot->right = nullptr;

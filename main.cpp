@@ -12,6 +12,10 @@ int main()
 	class Tree Akinator;
 
 	Akinator.Game();
-	printf("JUST DO IT\n");
 	Akinator.Game();
+	Akinator.Game();
+
+
+	printf("\nWE OUT OF GAME\n\n");
+
 }

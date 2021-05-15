@@ -41,5 +41,4 @@ void Tree::Game()
 			break;
 		}
 	}
-	printf("WE OUT OF GAME\n\n");
 }

@@ -37,48 +37,80 @@ void KnotPrint (struct Knot* knot, FILE* potok)
 void Tree::Play()
 {
 	char* answer = (char*) calloc (MAX_NAME_SIZE, sizeof(char));
-	struct Knot* knot = *(&root);
-
-	printf("Is it %s?\n", knot->data);
+	struct Knot* knot = root;
 
 	while(1)
 	{
-		scanf("%s", answer);
-
-		if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1))
+		printf("Is it %s?\n", knot->data);
+		
+		while(1)
 		{
-			if (knot->left != nullptr) 
+			scanf("%s", answer);
+
+			if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1))
 			{
-				knot = knot->left;
-				printf("Is it %s?\n", knot->data);				
+				if (knot->left != nullptr) 
+				{
+					knot = knot->left;
+					printf("Is it %s?\n", knot->data);			
+				}
+				else
+				{
+					printf("This is %s?\n", knot->data);
+					break;
+				}
 			}
-			else
+			else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1))
 			{
-				printf("This is %s?\n", knot->data);
-				break;
+				if (knot->right != nullptr) 
+				{
+					knot = knot->right;
+					printf("Is it %s?\n", knot->data);			
+				}
+				else
+				{
+					printf("This is %s?\n", knot->data);
+					break;
+				}
+			}
+			else if(!strncmp(answer, "e", 1) || !strncmp(answer, "E", 1))
+			{
+				return;
 			}
 		}
+		scanf("%s", answer);
+		if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1)) printf("I guess\n");
 		else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1))
 		{
-			if (knot->right != nullptr) 
-			{
-				knot = knot->right;
-				printf("Is it %s?\n", knot->data);				
-			}
-			else
-			{
-				printf("This is %s?\n", knot->data);
-				break;
-			}
-		}
-		else if(!strncmp(answer, "e", 1) || !strncmp(answer, "E", 1))
-		{
-			return;
+			printf("I screwed up\n");
+			printf("Enter your answer\n");
+			scanf("%s", answer);
+			printf("KNOT NOW IS {%s}\n", knot->data);
+			knot = FillKnot(knot->right, knot->data, knot);
+			knot->parent->right = knot;
+			knot = knot->parent;
+			knot = FillKnot(knot->left, answer, knot);
+			knot->parent->left = knot;
+			printf("KNOT NOW IS {%s}\n", knot->data);
+
+			printf("Enter the attribute that distinguishes YOUR character FROM the named one\n");
+			scanf("%s", answer);
+
+			knot->parent->data = answer;
+			printf("KNOT NOW IS {%s}\n", knot->parent->data);
+
+			knot = root;
+
+			printf("ROOT IS {%s}\n", knot->data);
+
+			return;                                     // HOW IT GOING?!!
+
+			printf("One more time?\n");
+			scanf("%s", answer);
+
+			if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1)) return;		
 		}
 	}
-	scanf("%s", answer);
-	if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1)) printf("I guess\n");
-	else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1)) printf("I screwed up\n");
 
 	free(answer);
 }
