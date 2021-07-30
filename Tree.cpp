@@ -1,13 +1,13 @@
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/stat.h>
 #include "Tree.h"
 
 Tree::Tree()
 {
-	root = (struct Knot*)calloc(1, sizeof(struct Knot));
+	root = (struct Node*)calloc(1, sizeof(struct Node));  //          nullptr??
 	root->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 	root->left = nullptr;
 	root->right = nullptr;
@@ -17,84 +17,90 @@ Tree::~Tree()
 {
 	DeleteBranch(root);
 }
+/*
 Tree& Tree::operator= (const Tree& tree)
 {
-	printf("WE INTO OPERATOR=\n");
-	root = (struct Knot*)calloc(1, sizeof(struct Knot));
+	printf("WE INTO OPERATOR=\n");                      // This is shit
+	root = (struct Node*)calloc(1, sizeof(struct Node));
 	root->data = tree.root->data;
 	root->left = tree.root->left;
 	root->right = tree.root->right;
 	root->parent = tree.root->parent;
 
 	return *this;
+}*/
+
+void NodeConstruct(struct Node* node, struct Node* parent)
+{
+	node = (struct Node*)calloc(1, sizeof(struct Node));
+	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	node->left = nullptr;
+	node->right = nullptr;
+	node->parent = parent;
 }
 
-void KnotConstruct(struct Knot* knot, struct Knot* parent)
+void DeleteBranch(struct Node* node)
 {
-	knot = (struct Knot*)calloc(1, sizeof(struct Knot));
-	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
-	knot->left = nullptr;
-	knot->right = nullptr;
-	knot->parent = parent;
-}
+	if (node != NULL) {
 
-void DeleteBranch(struct Knot* knot)
-{
-	if (knot != NULL) {
+		DeleteBranch(node->left);
+		DeleteBranch(node->right);
 
-		DeleteBranch(knot->left);
-		DeleteBranch(knot->right);
-
-		free(knot->data);
-		free(knot);
+		free(node->data);
+		free(node);
 	}
 }
 
-void Tree::FillAkinator(char* base_name)
+void Tree::LoadBase(char* base_name)
 {
-	char* base = (char*)calloc(MAX_BASE_SIZE, sizeof(char));
+	struct stat buff;
+	stat(base_name, &buff);
+	size_t base_size = buff.st_size;
+
+	char* base = (char*)calloc(base_size, sizeof(char));
 
 	FILE* potok = fopen(base_name, "r");
 
-	fread(base, sizeof(char), MAX_BASE_SIZE, potok);
+	fread(base, sizeof(char), base_size, potok);
+
+	char* end = base + base_size;
 
 	fclose(potok);
 
-	struct Knot* knot = (struct Knot*)calloc(1, sizeof(struct Knot));
+	struct Node* node = (struct Node*)calloc(1, sizeof(struct Node));
 
 	char* string = base;
-	knot->left = nullptr;
-	knot->right = nullptr;
-	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
-	knot->parent = nullptr;
+	node->left = nullptr;
+	node->right = nullptr;
+	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	node->parent = nullptr;
 
-	for (;; string++)
-	{
-		if (isspace(*string)) continue;
-		if (*string == '[')
+	while (isspace(*string)) string++;
+	if (*string == '{') {
+		printf("THERE!\n"); 
+		string++;
+		while (isspace(*string)) string++;
+		string = strtok(string, "$");
+
+		size_t len = strlen(string);
+		for (int i = 0; i < len; i++)
 		{
-			string++;
-			while (isspace(*string)) string++;
-			string = strtok(string, "@");
-
-			size_t len = strlen(string);
-			for (int i = 0; i < len; i++)
-			{
-				knot->data[i] = string[i];
-			}
-			knot->data[len] = '\0';
-
-			string = string + strlen(string) + 1;
-
-			continue;
+			node->data[i] = string[i];
 		}
+		node->data[len] = '\0';
+		printf("{{{%s}}}\n", node->data);
+		string = string + strlen(string) + 1;
+	}
+
+	for (; string != end; string++)
+	{
 		if (*string == '{')
 		{
 			string++;
 			while (isspace(*string)) string++;
 			string = strtok(string, "$");
 
-			knot = FillKnot(knot->left, string, knot);
+			node = ChargeNode(node->left, string, node);
 
 			string = string + strlen(string) + 1;
 
@@ -102,10 +108,10 @@ void Tree::FillAkinator(char* base_name)
 		}
 		if (*string == '}')
 		{
-			if (knot->parent != nullptr)
+			if (node->parent != nullptr)
 			{
-				knot->parent->right = knot;
-				knot = knot->parent;
+				node->parent->right = node;
+				node = node->parent;
 			}
 			continue;
 		}
@@ -115,41 +121,95 @@ void Tree::FillAkinator(char* base_name)
 			while (isspace(*string)) string++;
 			string = strtok(string, "$");
 
-			knot->parent->left = knot;
-			knot = knot->parent;
-			knot = FillKnot(knot->right, string, knot);
+			node->parent->left = node;
+			node = node->parent;
+			node = ChargeNode(node->right, string, node);
 
 			string = string + strlen(string) + 1;
 			continue;
 		}
-		if (*string == ']')
-		{
-			root->left = knot->left;
-			root->right = knot->right;
-			root->data = knot->data;
-
-			break;
-		}
 	}
+	root->left = node->left;
+	root->right = node->right;
+	root->data = node->data;
 
 	free(base);
 }
 
-struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent)
+struct Node* ChargeNode(struct Node* node, char* string, struct Node* parent)
 {
-	knot = (struct Knot*)calloc(1, sizeof(Knot));
-	knot->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	node = (struct Node*)calloc(1, sizeof(Node));
+	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 
 	size_t len = strlen(string);
 	for (int i = 0; i < len; i++)
 	{
-		knot->data[i] = string[i];
+		node->data[i] = string[i];
 	}
-	printf("[%s]\n", knot->data);
-	knot->data[len] = '\0';
-	knot->left = nullptr;
-	knot->right = nullptr;
-	knot->parent = parent;
+	//printf("[%s]\n", node->data);
+	node->data[len] = '\0';                        //SegFault?
+	node->left = nullptr;
+	node->right = nullptr;
+	node->parent = parent;
 
-	return knot;
+	return node;
+}
+/*
+void NodePrint_2(struct Node* node, FILE* potok, int* i)
+{
+	if (node->left != nullptr)  // i - glubina * 2
+	{
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "{\n");
+		++(*i);
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "$%s%\n", node->left->data);
+		++(*i);
+		NodePrint_2(node->left, potok, i);
+		--(*i);
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "$%s%\n", node->right->data);
+		--(*i);
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "}\n");
+		NodePrint_2(node->right, potok, i);
+	}
+}*/
+void NodePrint_2(struct Node* node, FILE* potok, int* i)
+{
+	if (node != nullptr)  // i - glubina * 2
+	{
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "{\n");
+		++(*i);
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "$%s%\n", node->data);
+		++(*i);
+		NodePrint_2(node->left, potok, i);
+
+		NodePrint_2(node->right, potok, i);
+		--(*i);
+		--(*i);
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "}\n");
+		/*--(*i);
+		//for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		//fprintf(potok, "$%s%\n", node->data);
+		--(*i);
+		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		fprintf(potok, "}\n");*/
+	}
+}
+
+void Tree::DumpBase()
+{
+	printf("Enter file name, where will be dump base\n");
+	char* answer = (char*)calloc(100, sizeof(char)); //                           !!!!!!!
+	scanf("%s", answer);
+
+	FILE* potok = fopen(answer, "w");      //   !!!!!
+	int i = 0;
+	NodePrint_2(root, potok, &i);
+	fclose(potok);
+	free(answer);
 }

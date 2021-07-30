@@ -11,34 +11,41 @@
 void Tree::Game()
 {
 	size_t answer = 0;
-	printf("Enter code:\n");
-	scanf("%d", &answer);
+	printf("There are the following possibilities here:\n");
+	printf("1 - start game\n");
+	printf("2 - load base from file\n");
+	printf("3 - see base's graph\n");
+	printf("4 - save base\n");
+	printf("5 - exit\n");
 
-	printf("answer is %d\n", answer);
+	while (1) {
+		printf("Enter code:\n");
+		scanf("%d", &answer);
 
-	switch (answer)
-	{
-		case 2:
+		switch (answer)
 		{
+		case 1:
 			printf("LETS START\n");
 			Play();
 			break;
-		}
-		case 1:			// LOAD BASE AND LOAD TO TREE
-		{
+		case 2: {			// LOAD BASE AND LOAD TO TREE
 			printf("Enter file name:\n");
 			char* base_name = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
 
 			scanf("%s", base_name);
 
-			FillAkinator(base_name);
-
+			LoadBase(base_name);
+			free(base_name);
 			break;
 		}
 		case 3:         //DUMP
-		{
-			DUMP();
+			DumpGraph();
 			break;
+		case 4:
+			DumpBase();
+			break;
+		case 5:
+			exit(0);
 		}
 	}
 }

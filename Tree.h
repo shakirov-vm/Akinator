@@ -1,30 +1,31 @@
 #define MAX_DATA_SIZE 100
 #define MAX_BASE_SIZE 100000
 
-struct Knot
+struct Node
 {
 	char* data;
-	struct Knot* parent;
-	struct Knot* left;
-	struct Knot* right;
+	struct Node* parent;
+	struct Node* left;
+	struct Node* right;
 };
 
 class Tree
 {
 private:
-	struct Knot* root;
+	struct Node* root;
 public:
 	Tree();
 	~Tree();
-	Tree& operator= (const Tree& knot);
+	Tree& operator= (const Tree& node) = delete;
 	Tree(const Tree&) = delete;
-	void FillAkinator(char* base);
-	void DUMP();
+	void LoadBase(char* base);
+	void DumpGraph();
 	void Play();
 	void Game();
+	void DumpBase();
 };
 
-struct Knot* FillKnot(struct Knot* knot, char* string, struct Knot* parent);
-void KnotConstruct(struct Knot* knot, struct Knot* parent);
-void DeleteBranch(struct Knot* knot);
-void KnotPrint(struct Knot* knot, FILE* potok);
+struct Node* ChargeNode(struct Node* node, char* string, struct Node* parent);
+void NodeConstruct(struct Node* node, struct Node* parent);
+void DeleteBranch(struct Node* node);
+void NodePrint(struct Node* node, FILE* potok); 
