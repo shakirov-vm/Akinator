@@ -28,4 +28,4 @@ public:
 struct Node* ChargeNode(struct Node* node, char* string, struct Node* parent);
 void NodeConstruct(struct Node* node, struct Node* parent);
 void DeleteBranch(struct Node* node);
-void NodePrint(struct Node* node, FILE* potok); 
+void PrintGraph(struct Node* node, FILE* potok);

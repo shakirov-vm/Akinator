@@ -16,21 +16,21 @@ void Tree::DumpGraph()
 	FILE* potok = fopen("graph.dot", "w");
 
 	fprintf(potok, "digraph G {\n");
-	NodePrint(root, potok);
+	PrintGraph(root, potok);
 
 	fprintf(potok, "}\n");
 
 	fclose(potok);
 }
 
-void NodePrint(struct Node* node, FILE* potok)
+void PrintGraph(struct Node* node, FILE* potok)
 {
 	if (node->left != nullptr)
 	{
 		fprintf(potok, "\"%s\" -> \"%s\";\n", node->data, node->left->data);
 		fprintf(potok, "\"%s\" -> \"%s\";\n", node->data, node->right->data);
-		NodePrint(node->left, potok);
-		NodePrint(node->right, potok);
+		PrintGraph(node->left, potok);
+		PrintGraph(node->right, potok);
 	}
 }
 
@@ -38,10 +38,10 @@ void Tree::Play()
 {
 	char* answer = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
 	struct Node* node = root;
+//	printf("Is it %s?\n", node->data);
 
-	while (1)
-	{
-		scanf("%s", answer);
+	while (1)                         //////                 THERE MISTAKE
+	{                             ///////////////////////             Bad order
 		if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1))
 		{
 			if (node->left != nullptr)
@@ -72,6 +72,7 @@ void Tree::Play()
 		{
 			return;
 		}
+		scanf("%s", answer);
 	}
 	scanf("%s", answer);
 	if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1)) printf("I guess\n");

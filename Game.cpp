@@ -25,7 +25,7 @@ void Tree::Game()
 		switch (answer)
 		{
 		case 1:
-			printf("LETS START\n");
+			printf("Let's start. Press \"y\" or \"n\" to start\n");
 			Play();
 			break;
 		case 2: {			// LOAD BASE AND LOAD TO TREE

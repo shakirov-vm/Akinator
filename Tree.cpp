@@ -77,7 +77,6 @@ void Tree::LoadBase(char* base_name)
 
 	while (isspace(*string)) string++;
 	if (*string == '{') {
-		printf("THERE!\n"); 
 		string++;
 		while (isspace(*string)) string++;
 		string = strtok(string, "$");
@@ -87,8 +86,7 @@ void Tree::LoadBase(char* base_name)
 		{
 			node->data[i] = string[i];
 		}
-		node->data[len] = '\0';
-		printf("{{{%s}}}\n", node->data);
+		//node->data[len] = '\0';
 		string = string + strlen(string) + 1;
 	}
 
@@ -96,6 +94,7 @@ void Tree::LoadBase(char* base_name)
 	{
 		if (*string == '{')
 		{
+			
 			string++;
 			while (isspace(*string)) string++;
 			string = strtok(string, "$");
@@ -175,33 +174,30 @@ void NodePrint_2(struct Node* node, FILE* potok, int* i)
 		NodePrint_2(node->right, potok, i);
 	}
 }*/
-void NodePrint_2(struct Node* node, FILE* potok, int* i)
+void PrintBase(struct Node* node, FILE* potok, int* i, int costyl)
 {
 	if (node != nullptr)  // i - glubina * 2
 	{
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "{\n");
-		++(*i);
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "$%s%\n", node->data);
-		++(*i);
-		NodePrint_2(node->left, potok, i);
-
-		NodePrint_2(node->right, potok, i);
-		--(*i);
-		--(*i);
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "}\n");
-		/*--(*i);
-		//for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		//fprintf(potok, "$%s%\n", node->data);
-		--(*i);
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "}\n");*/
+		if (!costyl) {
+			for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+			fprintf(potok, "{\n");
+			++(*i);
+			++(*i);
+		}
+		for (int j = 0; j < (*i) - 1; j++) fprintf(potok, "\t");
+		fprintf(potok, "$%s%$\n", node->data);
+		PrintBase(node->left, potok, i, 0);
+		PrintBase(node->right, potok, i, 1);
+		if (costyl) {
+			--(*i);
+			--(*i);
+			for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+			fprintf(potok, "}\n");
+		}
 	}
 }
 
-void Tree::DumpBase()
+void Tree::DumpBase()  //          DO text for writing
 {
 	printf("Enter file name, where will be dump base\n");
 	char* answer = (char*)calloc(100, sizeof(char)); //                           !!!!!!!
@@ -209,7 +205,7 @@ void Tree::DumpBase()
 
 	FILE* potok = fopen(answer, "w");      //   !!!!!
 	int i = 0;
-	NodePrint_2(root, potok, &i);
+	PrintBase(root, potok, &i, 0);
 	fclose(potok);
 	free(answer);
 }
