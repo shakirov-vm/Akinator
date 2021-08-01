@@ -17,18 +17,6 @@ Tree::~Tree()
 {
 	DeleteBranch(root);
 }
-/*
-Tree& Tree::operator= (const Tree& tree)
-{
-	printf("WE INTO OPERATOR=\n");                      // This is shit
-	root = (struct Node*)calloc(1, sizeof(struct Node));
-	root->data = tree.root->data;
-	root->left = tree.root->left;
-	root->right = tree.root->right;
-	root->parent = tree.root->parent;
-
-	return *this;
-}*/
 
 void NodeConstruct(struct Node* node, struct Node* parent)
 {
@@ -153,46 +141,62 @@ struct Node* ChargeNode(struct Node* node, char* string, struct Node* parent)
 
 	return node;
 }
-/*
-void NodePrint_2(struct Node* node, FILE* potok, int* i)
-{
-	if (node->left != nullptr)  // i - glubina * 2
-	{
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "{\n");
-		++(*i);
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "$%s%\n", node->left->data);
-		++(*i);
-		NodePrint_2(node->left, potok, i);
-		--(*i);
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "$%s%\n", node->right->data);
-		--(*i);
-		for (int j = 0; j < *i; j++) fprintf(potok, "\t");
-		fprintf(potok, "}\n");
-		NodePrint_2(node->right, potok, i);
-	}
-}*/
-void PrintBase(struct Node* node, FILE* potok, int* i, int costyl)
+void PrintBase(struct Node* node, FILE* potok, int* depth, int equalizer) //The value of the equalizer is selected so that there are no extra brackets
 {
 	if (node != nullptr)  // i - glubina * 2
 	{
-		if (!costyl) {
-			for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		if (!equalizer) {
+			for (int j = 0; j < *depth; j++) fprintf(potok, "\t");
 			fprintf(potok, "{\n");
-			++(*i);
-			++(*i);
+			++(*depth);
+			++(*depth);
 		}
-		for (int j = 0; j < (*i) - 1; j++) fprintf(potok, "\t");
+		for (int j = 0; j < (*depth) - 1; j++) fprintf(potok, "\t");
 		fprintf(potok, "$%s%$\n", node->data);
-		PrintBase(node->left, potok, i, 0);
-		PrintBase(node->right, potok, i, 1);
-		if (costyl) {
-			--(*i);
-			--(*i);
-			for (int j = 0; j < *i; j++) fprintf(potok, "\t");
+		PrintBase(node->left, potok, depth, 0);
+		PrintBase(node->right, potok, depth, 1);
+		if (equalizer) {
+			--(*depth);
+			--(*depth);
+			for (int j = 0; j < *depth; j++) fprintf(potok, "\t");
 			fprintf(potok, "}\n");
+		}
+	}
+}
+/*
+void PrintBase(struct Node* node, char* base, int* depth, int equalizer) //The value of the equalizer is selected so that there are no extra brackets
+{
+	if (node != nullptr) // ?? lishnii ++?
+	{
+		if (!equalizer) {
+			for (int j = 0; j < *depth; j++) {
+				printf("%p - ", base);
+				sprintf(base, "\t");
+				printf("%p\n", base);
+				base++;
+			}
+			sprintf(base, "{\n");
+			base += 2;
+			++(*depth);
+			++(*depth);
+		}
+		for (int j = 0; j < (*depth) - 1; j++) {
+			sprintf(base, "\t");
+			base++;
+		}
+		sprintf(base, "$%s$\n", node->data);          //        ???????????
+		base += strlen(node->data) + 3;
+		PrintBase(node->left, base, depth, 0);
+		PrintBase(node->right, base, depth, 1);
+		if (equalizer) {
+			--(*depth);
+			--(*depth);
+			for (int j = 0; j < *depth; j++) {
+				sprintf(base, "\t");
+				base++;
+			}
+			sprintf(base, "}\n");
+			base += 2;
 		}
 	}
 }
@@ -202,10 +206,31 @@ void Tree::DumpBase()  //          DO text for writing
 	printf("Enter file name, where will be dump base\n");
 	char* answer = (char*)calloc(100, sizeof(char)); //                           !!!!!!!
 	scanf("%s", answer);
-
+	char* base = (char*)calloc(MAX_BASE_SIZE, sizeof(char));
+	char* start = base;
 	FILE* potok = fopen(answer, "w");      //   !!!!!
 	int i = 0;
-	PrintBase(root, potok, &i, 0);
+	PrintBase(root, base, &i, 0);
+	printf("%s\n==================================================\n", start);
+	for (int i = 0; i < 1000; i++) {
+		if (start[i] == '0') printf("!");
+		else printf("%c", start[i]);
+	}
+	free(start);
+	fclose(potok);
+	free(answer);
+}*/
+
+void Tree::DumpBase()  //          DO text for writing
+{
+	printf("Enter file name, where will be dump base\n");
+	char* answer = (char*)calloc(100, sizeof(char)); //                           !!!!!!!
+	scanf("%s", answer);
+
+	FILE* potok = fopen(answer, "w");      //   !!!!!
+	int depth = 0;
+	PrintBase(root, potok, &depth, 0);
+	fprintf(potok, "}\n");
 	fclose(potok);
 	free(answer);
 }
