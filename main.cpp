@@ -1,4 +1,6 @@
-﻿#include <stdio.h>
+﻿
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #define MAX_STR_SIZE 100
@@ -20,5 +22,6 @@ int main()
 	Akinator.Game();
 
 	free(answer);
+
 	return 0;
 }

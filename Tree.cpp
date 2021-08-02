@@ -48,6 +48,10 @@ void Tree::LoadBase(char* base_name)
 	char* base = (char*)calloc(base_size, sizeof(char));
 
 	FILE* potok = fopen(base_name, "r");
+	if (potok == nullptr) {
+		printf("This file can't be open. Maybe it don't create\n");
+		return;
+	}
 
 	fread(base, sizeof(char), base_size, potok);
 

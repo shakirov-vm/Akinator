@@ -25,7 +25,7 @@ void Tree::Game()
 
 		switch (answer)
 		{
-		case 1:
+		case 1: //It's working
 			printf("Let's start. Press \"y\" or \"n\" to start\n");
 			Play();
 			break;
@@ -39,7 +39,7 @@ void Tree::Game()
 			free(base_name);
 			break;
 		}
-		case 3:         //DUMP
+		case 3:     
 			DumpGraph();
 			break;
 		case 4:
@@ -58,8 +58,8 @@ void Tree::Play()
 	struct Node* node = root;
 	printf("Is it %s?\n", node->data);
 
-	while (1)                         //////                 THERE MISTAKE
-	{                             ///////////////////////             Bad order
+	while (1)                        
+	{                            
 		if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1))
 		{
 			if (node->left != nullptr && node->left->left == nullptr)
@@ -109,23 +109,19 @@ void Tree::Play()
 		printf("I screwed up\n");
 		printf("Enter your answer\n");
 		scanf("%s", answer);
-		printf("KNOT NOW IS {%s}\n", node->data);
+
 		node = ChargeNode(node->right, node->data, node);
 		node->parent->right = node;
 		node = node->parent;
 		node = ChargeNode(node->left, answer, node);
 		node->parent->left = node;
-		printf("KNOT NOW IS {%s}\n", node->data);
 
 		printf("Enter the attribute that distinguishes YOUR character FROM the named one\n");
 		scanf("%s", answer);
 
 		node->parent->data = answer;
-		printf("KNOT NOW IS {%s}\n", node->parent->data);
 
 		node = root;
-
-		printf("ROOT IS {%s}\n", node->data);
 
 		return;                                     // HOW IT GOING?!!
 
