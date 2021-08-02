@@ -34,78 +34,39 @@ void PrintGraph(struct Node* node, FILE* potok)
 	}
 }
 
-void Tree::Play()
+void PrintBase(struct Node* node, FILE* potok, int* depth, int equalizer) //The value of the equalizer is selected so that there are no extra brackets
 {
-	char* answer = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
-	struct Node* node = root;
-//	printf("Is it %s?\n", node->data);
-
-	while (1)                         //////                 THERE MISTAKE
-	{                             ///////////////////////             Bad order
-		if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1))
-		{
-			if (node->left != nullptr)
-			{
-				printf("Is it %s?\n", node->data);
-				node = node->left;
-			}
-			else
-			{
-				printf("This is %s?\n", node->data);
-				break;
-			}
-		}
-		else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1))
-		{
-			if (node->right != nullptr)
-			{
-				printf("Is it %s?\n", node->data);
-				node = node->right;
-			}
-			else
-			{
-				printf("This is %s?\n", node->data);
-				break;
-			}
-		}
-		else if (!strncmp(answer, "e", 1) || !strncmp(answer, "E", 1))
-		{
-			return;
-		}
-		scanf("%s", answer);
-	}
-	scanf("%s", answer);
-	if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1)) printf("I guess\n");
-	else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1))
+	if (node != nullptr)  // i - glubina * 2
 	{
-		printf("I screwed up\n");
-		printf("Enter your answer\n");
-		scanf("%s", answer);
-		printf("KNOT NOW IS {%s}\n", node->data);
-		node = ChargeNode(node->right, node->data, node);
-		node->parent->right = node;
-		node = node->parent;
-		node = ChargeNode(node->left, answer, node);
-		node->parent->left = node;
-		printf("KNOT NOW IS {%s}\n", node->data);
-
-		printf("Enter the attribute that distinguishes YOUR character FROM the named one\n");
-		scanf("%s", answer);
-
-		node->parent->data = answer;
-		printf("KNOT NOW IS {%s}\n", node->parent->data);
-
-		node = root;
-
-		printf("ROOT IS {%s}\n", node->data);
-
-		return;                                     // HOW IT GOING?!!
-
-		printf("One more time?\n");
-		scanf("%s", answer);
-
-		if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1)) return;
+		if (!equalizer) {
+			for (int j = 0; j < *depth; j++) fprintf(potok, "\t");
+			fprintf(potok, "{\n");
+			++(*depth);
+			++(*depth);
+		}
+		for (int j = 0; j < (*depth) - 1; j++) fprintf(potok, "\t");
+		fprintf(potok, "$%s%$\n", node->data);
+		PrintBase(node->left, potok, depth, 0);
+		PrintBase(node->right, potok, depth, 1);
+		if (equalizer) {
+			--(*depth);
+			--(*depth);
+			for (int j = 0; j < *depth; j++) fprintf(potok, "\t");
+			fprintf(potok, "}\n");
+		}
 	}
+}
 
+void Tree::DumpBase()  //          DO text for writing
+{
+	printf("Enter file name, where will be dump base\n");
+	char* answer = (char*)calloc(100, sizeof(char)); //                           !!!!!!!
+	scanf("%s", answer);
+
+	FILE* potok = fopen(answer, "w");      //   !!!!!
+	int depth = 0;
+	PrintBase(root, potok, &depth, 0);
+	fprintf(potok, "}\n");
+	fclose(potok);
 	free(answer);
 }
