@@ -1,5 +1,12 @@
 #define MAX_DATA_SIZE 100
 #define MAX_BASE_SIZE 100000
+#define MAX_NAME_SIZE 50
+
+#define NO_MEMORY(ptr)												\
+		if (ptr == nullptr) {										\
+			printf("Can't allocate memory\n");						\
+			return;													\
+		}
 
 struct Node
 {
@@ -13,16 +20,18 @@ class Tree
 {
 private:
 	struct Node* root;
+
+	void DumpGraph();
+	void Play();
+	void DumpBase();
 public:
 	Tree();
 	~Tree();
 	Tree& operator= (const Tree& node) = delete;
 	Tree(const Tree&) = delete;
+
 	void LoadBase(char* base);
-	void DumpGraph();
-	void Play();
 	void Game();
-	void DumpBase();
 };
 
 struct Node* ChargeNode(struct Node* node, char* string, struct Node* parent);

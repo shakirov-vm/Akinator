@@ -2,18 +2,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <iostream>
 #include "Tree.h"
-
-#define MAX_NAME_SIZE 100
 
 void Tree::DumpGraph()
 {
-	/*struct Node* node = (struct Node*)calloc(1, sizeof(struct Node));
-	node->data = root->data;
-	node->right = root->right;
-	node->left = root->left;*/
-
 	FILE* potok = fopen("graph.dot", "w");
+	if (potok == nullptr) {
+		printf("This file can't be open\n");
+		return;
+	}
 
 	fprintf(potok, "digraph G {\n");
 	PrintGraph(root, potok);
@@ -36,7 +34,7 @@ void PrintGraph(struct Node* node, FILE* potok)
 
 void PrintBase(struct Node* node, FILE* potok, int* depth, int equalizer) //The value of the equalizer is selected so that there are no extra brackets
 {
-	if (node != nullptr)  // i - glubina * 2
+	if (node != nullptr) 
 	{
 		if (!equalizer) {
 			for (int j = 0; j < *depth; j++) fprintf(potok, "\t");
@@ -45,7 +43,7 @@ void PrintBase(struct Node* node, FILE* potok, int* depth, int equalizer) //The 
 			++(*depth);
 		}
 		for (int j = 0; j < (*depth) - 1; j++) fprintf(potok, "\t");
-		fprintf(potok, "$%s%$\n", node->data);
+		fprintf(potok, "$%s$\n", node->data);
 		PrintBase(node->left, potok, depth, 0);
 		PrintBase(node->right, potok, depth, 1);
 		if (equalizer) {
@@ -60,10 +58,17 @@ void PrintBase(struct Node* node, FILE* potok, int* depth, int equalizer) //The 
 void Tree::DumpBase()  //          DO text for writing
 {
 	printf("Enter file name, where will be dump base\n");
-	char* answer = (char*)calloc(100, sizeof(char)); //                           !!!!!!!
-	scanf("%s", answer);
+	char* answer = (char*)calloc(100, sizeof(char)); 
+	NO_MEMORY(answer)
 
-	FILE* potok = fopen(answer, "w");      //   !!!!!
+	std::cin.getline(answer, MAX_NAME_SIZE, '\n');
+
+	FILE* potok = fopen(answer, "w");     
+	if (potok == nullptr) {
+		printf("This file can't be open\n");
+		return;
+	}
+
 	int depth = 0;
 	PrintBase(root, potok, &depth, 0);
 	fprintf(potok, "}\n");

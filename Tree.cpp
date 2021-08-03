@@ -7,8 +7,10 @@
 
 Tree::Tree()
 {
-	root = (struct Node*)calloc(1, sizeof(struct Node));  //          nullptr??
+	root = (struct Node*)calloc(1, sizeof(struct Node)); 
+	NO_MEMORY(root)
 	root->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	NO_MEMORY(root->data)
 	root->left = nullptr;
 	root->right = nullptr;
 	root->parent = nullptr;
@@ -21,7 +23,9 @@ Tree::~Tree()
 void NodeConstruct(struct Node* node, struct Node* parent)
 {
 	node = (struct Node*)calloc(1, sizeof(struct Node));
+	NO_MEMORY(node)
 	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	NO_MEMORY(node->data)
 	node->left = nullptr;
 	node->right = nullptr;
 	node->parent = parent;
@@ -60,6 +64,7 @@ void Tree::LoadBase(char* base_name)
 	fclose(potok);
 
 	struct Node* node = (struct Node*)calloc(1, sizeof(struct Node));
+	NO_MEMORY(node)
 
 	char* counter = base;
 	node->left = nullptr;
@@ -85,7 +90,6 @@ void Tree::LoadBase(char* base_name)
 	{
 		if (*counter == '{')
 		{
-			
 			counter++;
 			while (isspace(*counter)) counter++;
 			counter = strtok(counter, "$");
@@ -93,16 +97,6 @@ void Tree::LoadBase(char* base_name)
 			node = ChargeNode(node->left, counter, node);
 
 			counter = counter + strlen(counter) + 1;
-
-			continue;
-		}
-		if (*counter == '}')
-		{
-			if (node->parent != nullptr)
-			{
-				node->parent->right = node;
-				node = node->parent;
-			}
 			continue;
 		}
 		if (*counter == '$')
@@ -113,9 +107,19 @@ void Tree::LoadBase(char* base_name)
 
 			node->parent->left = node;
 			node = node->parent;
+
 			node = ChargeNode(node->right, counter, node);
 
 			counter = counter + strlen(counter) + 1;
+			continue;
+		}
+		if (*counter == '}')
+		{
+			if (node->parent != nullptr)
+			{
+				node->parent->right = node;
+				node = node->parent;
+			}
 			continue;
 		}
 	}
@@ -129,6 +133,10 @@ void Tree::LoadBase(char* base_name)
 struct Node* ChargeNode(struct Node* node, char* counter, struct Node* parent)
 {
 	node = (struct Node*)calloc(1, sizeof(Node));
+	if (node == nullptr) {
+		printf("Can't allocate memory for node\n");
+		return nullptr;
+	}
 	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
 
 	size_t len = strlen(counter);
@@ -136,8 +144,7 @@ struct Node* ChargeNode(struct Node* node, char* counter, struct Node* parent)
 	{
 		node->data[i] = counter[i];
 	}
-	//printf("[%s]\n", node->data);
-	node->data[len] = '\0';                        //SegFault?
+
 	node->left = nullptr;
 	node->right = nullptr;
 	node->parent = parent;

@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define MAX_NAME_SIZE 50
+#include <iostream>
 
 #ifndef TREE_H_
 #define TREE_H_
@@ -21,7 +20,7 @@ void Tree::Game()
 
 	while (1) {
 		printf("Enter code:\n");
-		scanf("%d", &answer);
+		std::cin >> answer;
 
 		switch (answer)
 		{
@@ -33,7 +32,7 @@ void Tree::Game()
 			printf("Enter file name:\n");
 			char* base_name = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
 
-			scanf("%s", base_name);
+			std::cin.getline(base_name, MAX_NAME_SIZE, '\n');
 
 			LoadBase(base_name);
 			free(base_name);
@@ -47,6 +46,8 @@ void Tree::Game()
 			break;
 		case 5:
 			exit(0);
+		default:
+			printf("Unknown command\n");
 		}
 	}
 }
@@ -55,6 +56,8 @@ void Tree::Game()
 void Tree::Play()
 {
 	char* answer = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
+	NO_MEMORY(answer)
+
 	struct Node* node = root;
 	printf("Is it %s?\n", node->data);
 
@@ -86,7 +89,7 @@ void Tree::Play()
 				printf("This is %s?\n", node->data);
 				break;
 			}
-			else if (node->left != nullptr && (node->right->left != nullptr || node->left->left != nullptr))
+			else if (node->right != nullptr && (node->right->left != nullptr || node->left->left != nullptr))
 			{
 				node = node->right;
 				printf("Is it %s?\n", node->data);
@@ -100,15 +103,15 @@ void Tree::Play()
 		{
 			return;
 		}
-		scanf("%s", answer);
+		std::cin.getline(answer, MAX_NAME_SIZE, '\n');
 	}
-	scanf("%s", answer);
+	std::cin.getline(answer, MAX_NAME_SIZE, '\n');
 	if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1)) printf("I guess\n");
 	else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1))
 	{
 		printf("I screwed up\n");
 		printf("Enter your answer\n");
-		scanf("%s", answer);
+		std::cin.getline(answer, MAX_NAME_SIZE, '\n');
 
 		node = ChargeNode(node->right, node->data, node);
 		node->parent->right = node;
@@ -117,7 +120,7 @@ void Tree::Play()
 		node->parent->left = node;
 
 		printf("Enter the attribute that distinguishes YOUR character FROM the named one\n");
-		scanf("%s", answer);
+		std::cin.getline(answer, MAX_NAME_SIZE, '\n');
 
 		node->parent->data = answer;
 
@@ -126,7 +129,7 @@ void Tree::Play()
 		return;                                     // HOW IT GOING?!!
 
 		printf("One more time?\n");
-		scanf("%s", answer);
+		std::cin.getline(answer, MAX_NAME_SIZE, '\n');
 
 		if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1)) return;
 	}
