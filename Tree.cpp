@@ -3,14 +3,22 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/stat.h>
+#include <iostream>
+
+#ifndef TREE_H_
+#define TREE_H_
 #include "Tree.h"
+#endif
+
+#ifndef ERRORS_H
+#define ERRORS_H
+#include "Errors.h"
+#endif
 
 Tree::Tree()
 {
-	root = (struct Node*)calloc(1, sizeof(struct Node)); 
-	NO_MEMORY(root)
-	root->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
-	NO_MEMORY(root->data)
+	root = (struct Node*)calloc_error(1, sizeof(struct Node)); 
+	root->data = (char*)calloc_error(MAX_DATA_SIZE, sizeof(char));
 	root->left = nullptr;
 	root->right = nullptr;
 	root->parent = nullptr;
@@ -22,10 +30,8 @@ Tree::~Tree()
 
 void NodeConstruct(struct Node* node, struct Node* parent)
 {
-	node = (struct Node*)calloc(1, sizeof(struct Node));
-	NO_MEMORY(node)
-	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
-	NO_MEMORY(node->data)
+	node = (struct Node*)calloc_error(1, sizeof(struct Node));
+	node->data = (char*)calloc_error(MAX_DATA_SIZE, sizeof(char));
 	node->left = nullptr;
 	node->right = nullptr;
 	node->parent = parent;
@@ -43,19 +49,22 @@ void DeleteBranch(struct Node* node)
 	}
 }
 
-void Tree::LoadBase(char* base_name)
+void Tree::LoadBase()
 {
+	printf("You need load base. Enter name\n");
+	char* base_name = (char*)calloc_error(100, sizeof(char));
+
+	std::cin.getline(base_name, MAX_NAME_SIZE, '\n');
+
+	FILE* potok = fopen_error(base_name, "r");
+
 	struct stat buff;
 	stat(base_name, &buff);
 	size_t base_size = buff.st_size;
 
-	char* base = (char*)calloc(base_size, sizeof(char));
+	free(base_name);
 
-	FILE* potok = fopen(base_name, "r");
-	if (potok == nullptr) {
-		printf("This file can't be open. Maybe it don't create\n");
-		return;
-	}
+	char* base = (char*)calloc_error(base_size, sizeof(char));
 
 	fread(base, sizeof(char), base_size, potok);
 
@@ -63,13 +72,12 @@ void Tree::LoadBase(char* base_name)
 
 	fclose(potok);
 
-	struct Node* node = (struct Node*)calloc(1, sizeof(struct Node));
-	NO_MEMORY(node)
+	struct Node* node = (struct Node*)calloc_error(1, sizeof(struct Node));
 
 	char* counter = base;
 	node->left = nullptr;
 	node->right = nullptr;
-	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	node->data = (char*)calloc_error(MAX_DATA_SIZE, sizeof(char));
 	node->parent = nullptr;
 	// Load root
 	while (isspace(*counter)) counter++;
@@ -132,12 +140,8 @@ void Tree::LoadBase(char* base_name)
 
 struct Node* ChargeNode(struct Node* node, char* counter, struct Node* parent)
 {
-	node = (struct Node*)calloc(1, sizeof(Node));
-	if (node == nullptr) {
-		printf("Can't allocate memory for node\n");
-		return nullptr;
-	}
-	node->data = (char*)calloc(MAX_DATA_SIZE, sizeof(char));
+	node = (struct Node*)calloc_error(1, sizeof(Node));
+	node->data = (char*)calloc_error(MAX_DATA_SIZE, sizeof(char));
 
 	size_t len = strlen(counter);
 	for (int i = 0; i < len; i++)

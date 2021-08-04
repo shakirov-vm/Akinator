@@ -8,6 +8,11 @@
 #include "Tree.h"
 #endif
 
+#ifndef ERRORS_H
+#define ERRORS_H
+#include "Errors.h"
+#endif
+
 void Tree::Game()
 {
 	size_t answer = 0;
@@ -20,22 +25,18 @@ void Tree::Game()
 
 	while (1) {
 		printf("Enter code:\n");
-		std::cin >> answer;
+		while (scanf("%llu", &answer) != 1) {
+			printf("Enter valid code\n");
+			fseek(stdin, 0, SEEK_END);
+		}
 
 		switch (answer)
 		{
-		case 1: //It's working
-			printf("Let's start. Press \"y\" or \"n\" to start\n");
+		case 1: 
 			Play();
 			break;
 		case 2: {			// LOAD BASE AND LOAD TO TREE
-			printf("Enter file name:\n");
-			char* base_name = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
-
-			std::cin.getline(base_name, MAX_NAME_SIZE, '\n');
-
-			LoadBase(base_name);
-			free(base_name);
+			LoadBase();
 			break;
 		}
 		case 3:     
@@ -45,26 +46,25 @@ void Tree::Game()
 			DumpBase();
 			break;
 		case 5:
-			exit(0);
+			return;
 		default:
 			printf("Unknown command\n");
 		}
 	}
 }
 
-
 void Tree::Play()
 {
 	char* answer = (char*)calloc(MAX_NAME_SIZE, sizeof(char));
-	NO_MEMORY(answer)
+	if (answer == nullptr) return;
 
 	struct Node* node = root;
 	printf("Is it %s?\n", node->data);
 
-	while (1)                        
-	{                            
-		if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1))
-		{
+	while (1)
+	{
+		if (check_answer(answer, "yes"))
+		{			
 			if (node->left != nullptr && node->left->left == nullptr)
 			{
 				node = node->left;
@@ -81,7 +81,7 @@ void Tree::Play()
 				return;
 			}
 		}
-		else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1))
+		else if (check_answer(answer, "no"))
 		{
 			if (node->right != nullptr && node->right->right == nullptr)
 			{
@@ -99,15 +99,14 @@ void Tree::Play()
 				return;
 			}
 		}
-		else if (!strncmp(answer, "e", 1) || !strncmp(answer, "E", 1))
-		{
+		else if (check_answer(answer, "exit")) 
 			return;
-		}
 		std::cin.getline(answer, MAX_NAME_SIZE, '\n');
 	}
 	std::cin.getline(answer, MAX_NAME_SIZE, '\n');
-	if (!strncmp(answer, "y", 1) || !strncmp(answer, "Y", 1)) printf("I guess\n");
-	else if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1))
+	if (check_answer(answer, "yes"))
+		printf("I guess\n");
+	else if (check_answer(answer, "no"))
 	{
 		printf("I screwed up\n");
 		printf("Enter your answer\n");
@@ -126,12 +125,7 @@ void Tree::Play()
 
 		node = root;
 
-		return;                                     // HOW IT GOING?!!
-
-		printf("One more time?\n");
-		std::cin.getline(answer, MAX_NAME_SIZE, '\n');
-
-		if (!strncmp(answer, "n", 1) || !strncmp(answer, "N", 1)) return;
+		return;                 // Why don't free(answer) ??                    
 	}
 
 	free(answer);
