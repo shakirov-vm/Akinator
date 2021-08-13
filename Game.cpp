@@ -5,12 +5,12 @@
 
 #ifndef TREE_H_
 #define TREE_H_
-#include "Tree.h"
+#include "Tree/Tree.h"
 #endif
 
-#ifndef ERRORS_H
-#define ERRORS_H
-#include "Errors.h"
+#ifndef ADDITIONAL_H
+#define ADDITIONAL_H
+#include "Additional.h"
 #endif
 
 void Tree::Game()

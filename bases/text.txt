@@ -1,0 +1,39 @@
+{
+	$musical instrument$
+		{
+			$guitar$
+				{
+					$bass$
+						{
+							$Warwick$
+							$Japan$
+								{
+									$As Les Paul$
+										{
+											$Ibanez AF$
+											$Ibanes RG$
+										}
+									$Fender$
+								}
+						}
+					$drum$
+				}
+			$musical equipment$
+				{
+					$digital$
+						{
+							$Marshall Code$
+							$russian$
+								{
+									$Erasov$
+									$Orange Crush$
+								}
+						}
+					$musical person$
+						{
+							$vocalist$
+							$poltorashka$
+						}
+				}
+		}
+}

@@ -7,17 +7,17 @@
 
 #ifndef TREE_H_
 #define TREE_H_
-#include "Tree.h"
+#include "Tree/Tree.h"
 #endif
 
-#ifndef ERRORS_H
-#define ERRORS_H
-#include "Errors.h"
+#ifndef ADDITIONAL_H
+#define ADDITIONAL_H
+#include "Additional.h"
 #endif
 
 int main()
 {
-	//setlocale(LC_ALL, "Russian");
+	setlocale(LC_ALL, "");
 	//SetConsoleCP(1251);
 	//SetConsoleOutputCP(1251);
 	//system("chcp 1251");

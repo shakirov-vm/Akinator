@@ -1,3 +1,20 @@
 digraph G {
-	a -> b;
+"musical instrument" -> "guitar";
+"musical instrument" -> "musical equipment";
+"guitar" -> "bass";
+"guitar" -> "drum";
+"bass" -> "Warwick";
+"bass" -> "Japan";
+"Japan" -> "As Les Paul";
+"Japan" -> "Fender";
+"As Les Paul" -> "Ibanez AF";
+"As Les Paul" -> "Ibanes RG";
+"musical equipment" -> "digital";
+"musical equipment" -> "musical person";
+"digital" -> "Marshall Code";
+"digital" -> "russian";
+"russian" -> "Erasov";
+"russian" -> "Orange Crush";
+"musical person" -> "vocalist";
+"musical person" -> "poltorashka";
 }
